@@ -46,6 +46,36 @@ class Controller:
         self._view.txt_result.controls.clear()
         self._view.txt_result.controls.append(ft.Text(f"la componente connessa che contiene il nodo {self._model.getObjectFromId} ha dimensione pari a {sizeComponenteConnessa}"))
 
+        self._view._ddLun.disabled = False
+        self._view._btnCerca.disabled = False
+
+        #riempo tendina!!!
+        #myValues= list(range(2,sizeComponenteConnessa))
+        # for i in myValues:
+        #     self._view._ddLun.options.append(ft.dropdown.Option(i))
+        myValues = list(range(2, sizeComponenteConnessa))
+        myValuesDD= map(lambda x: ft.dropdown.Option(x),myValues)
+        self._view.update_page()
+
+
+    def handleCerca(self,e):
+        source= self._model.getObjectFromId(int(self._view.txtIdOggetto.value))
+        lun = self._view._ddLun.value
+        if lun is None:
+            self._view.txt_result.controls.clear()
+            self._view.txt_result.controls.append(ft.Text("inserisci un parametro lunghezza"))
+            self._view.update_page()
+            return
+        lunInt= int(lun)
+        path, peso= self._model.getOptPath(source,lunInt)
+
+        self._view.txt_result.controls.clear()
+        self._view.txt_result.controls.append(ft.Text(f"cammino trovato. Peso: {peso}"))
+        for i in path:
+            self._view.txt_result.controls.append(ft.Text(i))
+        self._view.update_page()
+
+
 
 
 

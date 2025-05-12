@@ -1,3 +1,5 @@
+import copy
+
 import networkx as nx
 
 from database.DAO import DAO
@@ -12,6 +14,50 @@ class Model:
         self.idMapObjects = {}
         for f in self._artObjects:
             self.idMapObjects[f.object_id] = f
+
+        self._bestPath= []
+        self._bestCost=0
+
+
+    def getOptPath(self,source,lun):
+        #inizializzo best path e best cost sia nell'init che a inizio metodo
+        self._bestPath= []
+        self._bestCost=0
+
+        parziale=[source]
+
+        for n in nx.neighbors(self._grafo,source):#tra tutti i vicini di source
+            if parziale[-0].classification == n.classification and n not in parziale:
+                parziale.append(n)
+                #chiamo la ricorsione
+                self._ricorsione(parziale,lun)
+                #backtracking
+                parziale.pop()
+
+        return self._bestPath,self._bestCost
+
+    def _ricorsione(self,parziale,lun):
+        #metodo terminale: parziale è una soluzione valida
+        if len(parziale) == lun: #parziale ha la lunghezza passata in input
+            #verifico se è una soluzione miglione, ma in ogni caso esco
+            if self.costo(parziale)< self._bestCost:
+                self._bestCost= self.costo(parziale)
+                self._bestPath = copy.deepcopy(parziale) #ricordalo sempre
+            return #fuori dall'if perchè returno a prescindere
+
+        else: #significa che ancora stiamo okay
+            for n in nx.neighbors(self._grafo,parziale[-1]): #-1 perchè è l'ultimo
+                if parziale[-0].classification== n.classification: #il testo dice che devono avere tutti la classification
+                    parziale.append(n)
+                    self._ricorsione(parziale,lun)
+                    parziale.pop()#backtraking
+
+    def costo(self,listaOggetti):
+        "prende una lista di oggetti e mi somma i pesi"
+        totCosto= 0
+        for i in range(0,len(listaOggetti)-1): #se iteri sugli archi è sempre -1
+            totCosto=self._grafo[listaOggetti[i]][listaOggetti[i+1]]["weight"] #i e i+1 sono due archi successivi
+        return totCosto
 
     def buildGraphPesato(self):
         # aggiungiamo i nodi(li ho nelle fermate)
@@ -68,3 +114,4 @@ class Model:
 
     def getObjectFromId(self,id):
         return self.idMapObjects[id]
+
