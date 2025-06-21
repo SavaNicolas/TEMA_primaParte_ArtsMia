@@ -86,6 +86,9 @@ class Model:
         restituisce la dimensione della componente connessa(a quanti nodi è collegata: cioè a quanti nodi può arrivare(da una fermata, quante fermate della metro posso raggiungere?)
         deepfirst e breath first
         """
+        if id not in self.idMapNodes:
+            return None
+            
         source= self._idMapObjects[idInput]
         #modo 1: conto i successori
         successori= nx.dfs_successors(self._grafo, source).values() #restituisce un dizionario chiave: oggetto, valore: lista di oggetti successori
