@@ -36,13 +36,16 @@ class Controller:
             self._view.update_page()
             return
 
-        if not self._model.hasNode(idInput):
+       
+
+        sizeComponenteConnessa= self._model.getInfoConnessa(idInput)
+         
+        if sizeComponenteConnessa is None:
             self._view.txt_result.controls.clear()
             self._view.txt_result.controls.append(ft.Text("inserisci un id valido"))
             self._view.update_page()
             return
-
-        sizeComponenteConnessa= self._model.getInfoConnessa(idInput)
+        
         self._view.txt_result.controls.clear()
         self._view.txt_result.controls.append(ft.Text(f"la componente connessa che contiene il nodo {self._model.getObjectFromId} ha dimensione pari a {sizeComponenteConnessa}"))
 
