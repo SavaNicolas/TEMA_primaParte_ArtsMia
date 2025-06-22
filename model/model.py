@@ -56,7 +56,7 @@ class Model:
         dfsTree= nx.dfs_tree(self._grafo, source).values() #e poi faccio len
 
         #modo 4:medodi connectivity
-        conn= nx.node_connected_components(self._graph,source)
+        conn= nx.node_connected_component(self._graph,source)
 
         return len(conn)
 
